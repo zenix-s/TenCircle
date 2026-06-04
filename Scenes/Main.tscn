@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c86e7evlc4pkf"]
+
+[ext_resource type="Script" uid="uid://dx4xifvdlbwe2" path="res://Scenes/Main.cs" id="1_r150o"]
+
+[node name="Main" type="Node2D" unique_id=138014373]
+script = ExtResource("1_r150o")
+
+[node name="SceneContainer" type="Node2D" parent="." unique_id=694769079]
+unique_name_in_owner = true
