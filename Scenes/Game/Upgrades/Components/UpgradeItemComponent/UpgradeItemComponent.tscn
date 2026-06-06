@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://nfmetuxm2roc"]
+
+[ext_resource type="Script" uid="uid://d1g72xvv1a0jg" path="res://Scenes/Game/Upgrades/Components/UpgradeItemComponent/UpgradeItemComponent.cs" id="1_u7541"]
+
+[node name="UpgradeItemComponent" type="HBoxContainer" unique_id=452480096]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+script = ExtResource("1_u7541")
+
+[node name="LblUpgradeName" type="Label" parent="." unique_id=127009492]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Texto"
+
+[node name="BtnUpgrade" type="Button" parent="." unique_id=192644211]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Update"

@@ -26,20 +26,20 @@ public partial class GameScene : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		LblMana.Text = $"Mana: {TenCircle.Instance.Mana}";
+		LblMana.Text = $"Mana: {TenCircle.Instance.ManaManager.RefinedMana[ManaType.Unrefined].Amount}";
 
-		LblFireMana.Text = $"Fire Mana: {TenCircle.Instance.RefinedMana[RefinedManaType.Fire].Amount}";
-		LblWaterMana.Text = $"Water Mana: {TenCircle.Instance.RefinedMana[RefinedManaType.Water].Amount}";
+		LblFireMana.Text = $"Fire Mana: {TenCircle.Instance.ManaManager.RefinedMana[ManaType.Fire].Amount}";
+		LblWaterMana.Text = $"Water Mana: {TenCircle.Instance.ManaManager.RefinedMana[ManaType.Water].Amount}";
 	}
 
 	private void OnBtnAddManaPressed()
 	{
 		TenCircle tenCircle = TenCircle.Instance;
-		tenCircle.Mana += 1;
+		tenCircle.AddMana();
 	}
 
 	private void OnBtnRefineManaPressed()
 	{
-		TenCircle.Instance.RefineMana();
+		TenCircle.Instance.ManaManager.RefineMana();
 	}
 }

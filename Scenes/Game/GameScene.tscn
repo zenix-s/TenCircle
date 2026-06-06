@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cwa3ke185gllc"]
 
 [ext_resource type="Script" uid="uid://doevxk01qtv1x" path="res://Scenes/Game/GameScene.cs" id="1_c3lgb"]
+[ext_resource type="PackedScene" uid="uid://dm4r6pfa7mwxa" path="res://Scenes/Game/Upgrades/Upgrades.tscn" id="2_t0q61"]
 
 [node name="GameScene" type="Node2D" unique_id=1817728748]
 script = ExtResource("1_c3lgb")
@@ -72,3 +73,8 @@ text = "Fire Label"
 unique_name_in_owner = true
 layout_mode = 2
 text = "Water Label"
+
+[node name="Upgrades" parent="CanvasLayer/VBoxContainer/TabContainer" unique_id=1299278308 instance=ExtResource("2_t0q61")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
