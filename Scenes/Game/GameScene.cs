@@ -40,6 +40,6 @@ public partial class GameScene : Node2D
 
 	private void OnBtnRefineManaPressed()
 	{
-		TenCircle.Instance.ManaManager.RefineMana();
+		TenCircle.Instance.RefineMana();
 	}
 }

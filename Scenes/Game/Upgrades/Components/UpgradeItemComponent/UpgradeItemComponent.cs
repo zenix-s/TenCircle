@@ -49,12 +49,13 @@ public partial class UpgradeItemComponent : HBoxContainer
 
 		string targetLevelText = _targetUpgrade.Level.ToString();
 		string targetMaxLevelText = _targetUpgrade.EffectValues.Count.ToString();
-		
+
 		LblUpgradeName.Text = $"{upgradeTypeText} - {targetTypeText} (Level {targetLevelText}/{targetMaxLevelText})";
 
 	}
 
 	private void OnBtnUpgradePressed()
 	{
+		TenCircle.Instance.UpgradeManager.Upgrades.Find(u => u == _targetUpgrade)?.LevelUp();
 	}
 }
