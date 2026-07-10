@@ -3,7 +3,7 @@ using System;
 
 public partial class UpgradeItemComponent : HBoxContainer
 {
-	private Upgrade _targetUpgrade;
+	private UpgradeDefinition _targetUpgrade;
 	private bool _isInitialized = false;
 
 	public Label LblUpgradeName { get; private set; }
@@ -17,7 +17,7 @@ public partial class UpgradeItemComponent : HBoxContainer
 		BtnUpgrade.Pressed += OnBtnUpgradePressed;
 	}
 
-	public void Initialize(Upgrade upgrade)
+	public void Initialize(UpgradeDefinition upgrade)
 	{
 		_targetUpgrade = upgrade;
 		_isInitialized = true;
@@ -47,7 +47,7 @@ public partial class UpgradeItemComponent : HBoxContainer
 			_ => "Error"
 		};
 
-		string targetLevelText = _targetUpgrade.Level.ToString();
+		string targetLevelText = TenCircle.Instance.GetUpgradeLevel(_targetUpgrade).ToString();
 		string targetMaxLevelText = _targetUpgrade.EffectValues.Count.ToString();
 
 		LblUpgradeName.Text = $"{upgradeTypeText} - {targetTypeText} (Level {targetLevelText}/{targetMaxLevelText})";
@@ -56,6 +56,6 @@ public partial class UpgradeItemComponent : HBoxContainer
 
 	private void OnBtnUpgradePressed()
 	{
-		TenCircle.Instance.UpgradeManager.Upgrades.Find(u => u == _targetUpgrade)?.LevelUp();
+		TenCircle.Instance.LevelUpUpgrade(_targetUpgrade);
 	}
 }

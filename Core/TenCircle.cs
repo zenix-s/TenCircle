@@ -26,18 +26,36 @@ public class Mana
     public float Amount { get; set; }
 }
 
+public class GameStateManager
+{
+    public Dictionary<ManaType, Mana> RefinedMana { get; private set; }
+    public Dictionary<string, int> UpgradeLevels { get; private set; } = new();
+
+    public GameStateManager()
+    {
+        RefinedMana = new Dictionary<ManaType, Mana>
+        {
+            { ManaType.Unrefined, new Mana { Type = ManaType.Unrefined, Amount = 0 } },
+            { ManaType.Fire, new Mana { Type = ManaType.Fire, Amount = 0 } },
+            { ManaType.Water, new Mana { Type = ManaType.Water, Amount = 0 } }
+        };
+    }
+}
+
 public partial class TenCircle : Node
 {
     public static TenCircle Instance { get; private set; }
 
-    public ManaManager ManaManager { get; private set; }
+    public GameStateManager GameStateManager { get; private set; }
+    
     public UpgradeManager UpgradeManager { get; private set; }
 
     public override void _EnterTree()
     {
         Instance = this;
         UpgradeManager = new UpgradeManager();
-        ManaManager = new ManaManager();
+
+        GameStateManager = new GameStateManager();
     }
 
     public override void _Ready()
@@ -52,7 +70,7 @@ public partial class TenCircle : Node
     {
         float stat = 0;
 
-        foreach (Upgrade upgrade in UpgradeManager.Upgrades)
+        foreach (UpgradeDefinition upgrade in UpgradeManager.Definitions)
         {
             if (upgrade.Type != type || upgrade.TargetType != targetType)
                 continue;
@@ -60,24 +78,37 @@ public partial class TenCircle : Node
             if (targetType == UpgradeTargetType.Specific && upgrade.TargetManaType != targetManaType)
                 continue;
 
-            if (upgrade.Level > 0)
-                stat += upgrade.EffectValues[upgrade.Level - 1];
+            int level = GetUpgradeLevel(upgrade);
+            if (level > 0)
+                stat += upgrade.EffectValues[level - 1];
         }
 
         return stat;
     }
 
+    public int GetUpgradeLevel(UpgradeDefinition definition)
+    {
+        return GameStateManager.UpgradeLevels.GetValueOrDefault(definition.Id, 0);
+    }
+
+    public void LevelUpUpgrade(UpgradeDefinition definition)
+    {
+        int currentLevel = GetUpgradeLevel(definition);
+        if (currentLevel < definition.EffectValues.Count)
+            GameStateManager.UpgradeLevels[definition.Id] = currentLevel + 1;
+    }
+
     public void AddMana()
     {
-        ManaManager.RefinedMana[ManaType.Unrefined].Amount += 10;
+        GameStateManager.RefinedMana[ManaType.Unrefined].Amount += 10;
     }
 
     public void RefineMana()
     {
-        float mana = ManaManager.RefinedMana[ManaType.Unrefined].Amount;
-        ManaManager.RefinedMana[ManaType.Unrefined].Amount = 0;
+        float mana = GameStateManager.RefinedMana[ManaType.Unrefined].Amount;
+        GameStateManager.RefinedMana[ManaType.Unrefined].Amount = 0;
 
-        foreach (var refined in ManaManager.RefinedMana.Values)
+        foreach (var refined in GameStateManager.RefinedMana.Values)
         {
             if (refined.Type is ManaType.Unrefined)
                 continue;

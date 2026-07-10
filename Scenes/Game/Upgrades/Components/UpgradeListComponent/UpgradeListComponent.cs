@@ -12,7 +12,7 @@ public partial class UpgradeListComponent : VBoxContainer
 	{
 		_upgradeItemScene = GetNode<UpgradeItemComponent>("%UpgradeItemComponentScene");
 
-		foreach (Upgrade upgrade in TenCircle.Instance.UpgradeManager.Upgrades)
+		foreach (UpgradeDefinition upgrade in TenCircle.Instance.UpgradeManager.Definitions)
 		{
 			UpgradeItemComponent upgradeItem = _upgradeItemScene.Duplicate() as UpgradeItemComponent;
 			upgradeItem.Initialize(upgrade);
