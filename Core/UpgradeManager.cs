@@ -1,40 +1,36 @@
 using System.Collections.Generic;
 
-
 public class UpgradeDefinition
 {
     public string Id { get; set; }
-    public UpgradeType Type { get; set; }
-    public UpgradeTargetType TargetType { get; set; }
-    public ManaType? TargetManaType { get; set; }
-    public List<float> EffectValues { get; set; } = [];
+    public Dictionary<StatType, List<float>> Effects { get; set; } = new();
 }
 
 public class UpgradeManager
 {
     public List<UpgradeDefinition> Definitions { get; private set; } = [
-        new UpgradeDefinition()
+        new UpgradeDefinition
         {
             Id = "efficiency_general",
-            Type = UpgradeType.Efficiency,
-            TargetType = UpgradeTargetType.General,
-            EffectValues = [0.02f, 0.05f]
+            Effects = new() { [StatType.ManaEfficiencyGeneral] = [0.02f, 0.05f] }
         },
-        new UpgradeDefinition()
+        new UpgradeDefinition
         {
             Id = "efficiency_fire",
-            Type = UpgradeType.Efficiency,
-            TargetType = UpgradeTargetType.Specific,
-            TargetManaType = ManaType.Fire,
-            EffectValues = [0.05f, 0.1f, 0.15f]
+            Effects = new() { [StatType.ManaEfficiencyFire] = [0.05f, 0.1f, 0.15f] }
         },
-        new UpgradeDefinition()
+        new UpgradeDefinition
         {
             Id = "efficiency_water",
-            Type = UpgradeType.Efficiency,
-            TargetType = UpgradeTargetType.Specific,
-            TargetManaType = ManaType.Water,
-            EffectValues = [0.05f, 0.1f, 0.15f]
+            Effects = new() { [StatType.ManaEfficiencyWater] = [0.05f, 0.1f, 0.15f] }
         }
     ];
+
+    public static string StatDisplayName(StatType type) => type switch
+    {
+        StatType.ManaEfficiencyGeneral => "General Efficiency",
+        StatType.ManaEfficiencyFire => "Fire Efficiency",
+        StatType.ManaEfficiencyWater => "Water Efficiency",
+        _ => "Error"
+    };
 }

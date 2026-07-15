@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class UpgradeItemComponent : HBoxContainer
 {
@@ -29,28 +30,11 @@ public partial class UpgradeItemComponent : HBoxContainer
 		if (!_isInitialized)
 			return;
 
-		string upgradeTypeText = _targetUpgrade.Type switch
-		{
-			UpgradeType.Efficiency => "Efficiency",
-			_ => "Error"
-		};
-
-		string targetTypeText = _targetUpgrade.TargetType switch
-		{
-			UpgradeTargetType.General => "General",
-			UpgradeTargetType.Specific => _targetUpgrade.TargetManaType switch
-			{
-				ManaType.Fire => "Fire Mana",
-				ManaType.Water => "Water Mana",
-				_ => "Error"
-			},
-			_ => "Error"
-		};
-
+		string upgradeStatsText = string.Join(", ", _targetUpgrade.Effects.Keys.Select(UpgradeManager.StatDisplayName));
 		string targetLevelText = TenCircle.Instance.GetUpgradeLevel(_targetUpgrade).ToString();
-		string targetMaxLevelText = _targetUpgrade.EffectValues.Count.ToString();
+		string targetMaxLevelText = _targetUpgrade.Effects.Values.Max(v => v.Count).ToString();
 
-		LblUpgradeName.Text = $"{upgradeTypeText} - {targetTypeText} (Level {targetLevelText}/{targetMaxLevelText})";
+		LblUpgradeName.Text = $"{upgradeStatsText} (Level {targetLevelText}/{targetMaxLevelText})";
 
 	}
 

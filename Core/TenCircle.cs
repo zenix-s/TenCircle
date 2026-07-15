@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public enum ManaType
 {
@@ -9,15 +10,11 @@ public enum ManaType
     Water
 }
 
-public enum UpgradeType
+public enum StatType
 {
-    Efficiency,
-}
-
-public enum UpgradeTargetType
-{
-    General,
-    Specific
+    ManaEfficiencyGeneral,
+    ManaEfficiencyFire,
+    ManaEfficiencyWater,
 }
 
 public class Mana
@@ -29,7 +26,7 @@ public class Mana
 public class GameStateManager
 {
     public Dictionary<ManaType, Mana> RefinedMana { get; private set; }
-    public Dictionary<string, int> UpgradeLevels { get; private set; } = new();
+    public Dictionary<string, int> UpgradeLevels { get; private set; } = [];
 
     public GameStateManager()
     {
@@ -66,21 +63,18 @@ public partial class TenCircle : Node
     {
     }
 
-    public float GetStat(UpgradeType type, UpgradeTargetType targetType, ManaType? targetManaType = null)
+    public float GetStat(StatType statType)
     {
         float stat = 0;
 
         foreach (UpgradeDefinition upgrade in UpgradeManager.Definitions)
         {
-            if (upgrade.Type != type || upgrade.TargetType != targetType)
-                continue;
-
-            if (targetType == UpgradeTargetType.Specific && upgrade.TargetManaType != targetManaType)
+            if (!upgrade.Effects.TryGetValue(statType, out List<float> values))
                 continue;
 
             int level = GetUpgradeLevel(upgrade);
-            if (level > 0)
-                stat += upgrade.EffectValues[level - 1];
+            if (level > 0 && level <= values.Count)
+                stat += values[level - 1];
         }
 
         return stat;
@@ -93,8 +87,9 @@ public partial class TenCircle : Node
 
     public void LevelUpUpgrade(UpgradeDefinition definition)
     {
+        int maxLevel = definition.Effects.Values.Max(v => v.Count);
         int currentLevel = GetUpgradeLevel(definition);
-        if (currentLevel < definition.EffectValues.Count)
+        if (currentLevel < maxLevel)
             GameStateManager.UpgradeLevels[definition.Id] = currentLevel + 1;
     }
 
@@ -113,13 +108,16 @@ public partial class TenCircle : Node
             if (refined.Type is ManaType.Unrefined)
                 continue;
 
-            // float refinedAmount = mana * StatManager.GetStat(UpgradeType.Efficiency, UpgradeTargetType.General);
-            float GeneralEfficiency = GetStat(UpgradeType.Efficiency, UpgradeTargetType.General);
-            float SpecificEfficiency = GetStat(UpgradeType.Efficiency, UpgradeTargetType.Specific, refined.Type);
-            float totalEfficiency = GeneralEfficiency + SpecificEfficiency;
-            float refinedAmount = mana * totalEfficiency;
-
-            refined.Amount += refinedAmount;
+            float generalEfficiency = GetStat(StatType.ManaEfficiencyGeneral);
+            float specificEfficiency = GetStat(SpecificManaEfficiencyStat(refined.Type));
+            refined.Amount += mana * (generalEfficiency + specificEfficiency);
         }
     }
+
+    private static StatType SpecificManaEfficiencyStat(ManaType type) => type switch
+    {
+        ManaType.Fire => StatType.ManaEfficiencyFire,
+        ManaType.Water => StatType.ManaEfficiencyWater,
+        _ => throw new ArgumentOutOfRangeException(nameof(type))
+    };
 }
