@@ -4,7 +4,8 @@ using System;
 public partial class GameScene : Node2D
 {
 	public Label LblMana { get; private set; }
-	public Button BtnAddMana { get; private set; }
+	public Button BtnToggleMenu { get; private set; }
+	public Control Body { get; private set; }
 
 	public Button BtnRefineMana { get; private set; }
 	public Label LblFireMana { get; private set; }
@@ -14,9 +15,11 @@ public partial class GameScene : Node2D
 	public override void _Ready()
 	{
 		LblMana = GetNode<Label>("%LblMana");
-		BtnAddMana = GetNode<Button>("%BtnAddMana");
-		BtnAddMana.Pressed += OnBtnAddManaPressed;
-		
+
+		Body = GetNode<Control>("%Body");
+		BtnToggleMenu = GetNode<Button>("%BtnToggleMenu");
+		BtnToggleMenu.Pressed += OnBtnToggleMenuPressed;
+
 		BtnRefineMana = GetNode<Button>("%BtnRefineMana");
 		BtnRefineMana.Pressed += OnBtnRefineManaPressed;
 		LblFireMana = GetNode<Label>("%LblFireMana");
@@ -28,14 +31,18 @@ public partial class GameScene : Node2D
 	{
 		LblMana.Text = $"Mana: {TenCircle.Instance.GameStateManager.RefinedMana[ManaType.Unrefined].Amount}";
 
-		LblFireMana.Text = $"Fire Mana: {TenCircle.Instance.GameStateManager.RefinedMana[ManaType.Fire].Amount}";
-		LblWaterMana.Text = $"Water Mana: {TenCircle.Instance.GameStateManager.RefinedMana[ManaType.Water].Amount}";
+		LblFireMana.Visible = TenCircle.Instance.IsManaTypeUnlocked(ManaType.Fire);
+		if (LblFireMana.Visible)
+			LblFireMana.Text = $"Fire Mana: {TenCircle.Instance.GameStateManager.RefinedMana[ManaType.Fire].Amount}";
+
+		LblWaterMana.Visible = TenCircle.Instance.IsManaTypeUnlocked(ManaType.Water);
+		if (LblWaterMana.Visible)
+			LblWaterMana.Text = $"Water Mana: {TenCircle.Instance.GameStateManager.RefinedMana[ManaType.Water].Amount}";
 	}
 
-	private void OnBtnAddManaPressed()
+	private void OnBtnToggleMenuPressed()
 	{
-		TenCircle tenCircle = TenCircle.Instance;
-		tenCircle.AddMana();
+		Body.Visible = !Body.Visible;
 	}
 
 	private void OnBtnRefineManaPressed()

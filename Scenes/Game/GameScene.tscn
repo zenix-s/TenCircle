@@ -2,9 +2,20 @@
 
 [ext_resource type="Script" uid="uid://doevxk01qtv1x" path="res://Scenes/Game/GameScene.cs" id="1_c3lgb"]
 [ext_resource type="PackedScene" uid="uid://dm4r6pfa7mwxa" path="res://Scenes/Game/Upgrades/Upgrades.tscn" id="2_t0q61"]
+[ext_resource type="PackedScene" path="res://Scenes/Game/Unlocks/Unlocks.tscn" id="5_unlocks"]
+[ext_resource type="Script" path="res://Scenes/Game/ManaBall/ManaBallSpawner.cs" id="3_spawner"]
+[ext_resource type="Script" path="res://Scenes/Game/ManaBall/ManaCollector.cs" id="4_collector"]
 
 [node name="GameScene" type="Node2D" unique_id=1817728748]
 script = ExtResource("1_c3lgb")
+
+[node name="PlayArea" type="Node2D" parent="." unique_id=3312245901]
+
+[node name="Spawner" type="Node2D" parent="PlayArea" unique_id=3312245902]
+script = ExtResource("3_spawner")
+
+[node name="Collector" type="Node2D" parent="PlayArea" unique_id=3312245903]
+script = ExtResource("4_collector")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1027343457]
 
@@ -15,66 +26,54 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=587678798]
+[node name="Header" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=587678798]
 layout_mode = 2
 
-[node name="LblMana" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=925125611]
+[node name="BtnToggleMenu" type="Button" parent="CanvasLayer/VBoxContainer/Header" unique_id=3312245904]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Menu"
+
+[node name="LblMana" type="Label" parent="CanvasLayer/VBoxContainer/Header" unique_id=925125611]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Mana = 0"
 
-[node name="TabContainer" type="TabContainer" parent="CanvasLayer/VBoxContainer" unique_id=2031608432]
+[node name="Body" type="TabContainer" parent="CanvasLayer/VBoxContainer" unique_id=2031608432]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 
-[node name="Control" type="Control" parent="CanvasLayer/VBoxContainer/TabContainer" unique_id=1272058309]
-visible = false
+[node name="Refinamiento" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/Body" unique_id=1991397009]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/TabContainer/Control" unique_id=614049429]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer2" type="CenterContainer" parent="CanvasLayer/VBoxContainer/TabContainer/Control/VBoxContainer" unique_id=1708943936]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BtnAddMana" type="Button" parent="CanvasLayer/VBoxContainer/TabContainer/Control/VBoxContainer/HBoxContainer2" unique_id=2132993898]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Add mana
-"
-
-[node name="Refinamiento" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/TabContainer" unique_id=1991397009]
-layout_mode = 2
-metadata/_tab_index = 1
-
-[node name="BtnRefineMana" type="Button" parent="CanvasLayer/VBoxContainer/TabContainer/Refinamiento" unique_id=1401116934]
+[node name="BtnRefineMana" type="Button" parent="CanvasLayer/VBoxContainer/Body/Refinamiento" unique_id=1401116934]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Refinar"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/TabContainer/Refinamiento" unique_id=287767621]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/Body/Refinamiento" unique_id=287767621]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LblFireMana" type="Label" parent="CanvasLayer/VBoxContainer/TabContainer/Refinamiento/VBoxContainer" unique_id=1908951721]
+[node name="LblFireMana" type="Label" parent="CanvasLayer/VBoxContainer/Body/Refinamiento/VBoxContainer" unique_id=1908951721]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Fire Label"
 
-[node name="LblWaterMana" type="Label" parent="CanvasLayer/VBoxContainer/TabContainer/Refinamiento/VBoxContainer" unique_id=587188727]
+[node name="LblWaterMana" type="Label" parent="CanvasLayer/VBoxContainer/Body/Refinamiento/VBoxContainer" unique_id=587188727]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Water Label"
 
-[node name="Upgrades" parent="CanvasLayer/VBoxContainer/TabContainer" unique_id=1299278308 instance=ExtResource("2_t0q61")]
+[node name="Desbloqueos" parent="CanvasLayer/VBoxContainer/Body" unique_id=1299278309 instance=ExtResource("5_unlocks")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Upgrades" parent="CanvasLayer/VBoxContainer/Body" unique_id=1299278308 instance=ExtResource("2_t0q61")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2

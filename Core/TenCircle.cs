@@ -27,6 +27,7 @@ public class GameStateManager
 {
     public Dictionary<ManaType, Mana> RefinedMana { get; private set; }
     public Dictionary<string, int> UpgradeLevels { get; private set; } = [];
+    public HashSet<ManaType> UnlockedManaTypes { get; private set; } = new() { ManaType.Unrefined };
 
     public GameStateManager()
     {
@@ -44,13 +45,18 @@ public partial class TenCircle : Node
     public static TenCircle Instance { get; private set; }
 
     public GameStateManager GameStateManager { get; private set; }
-    
+
     public UpgradeManager UpgradeManager { get; private set; }
+
+    public ManaUnlockManager ManaUnlockManager { get; private set; }
+
+    private const float UnlockBaseEfficiency = 0.1f;
 
     public override void _EnterTree()
     {
         Instance = this;
         UpgradeManager = new UpgradeManager();
+        ManaUnlockManager = new ManaUnlockManager();
 
         GameStateManager = new GameStateManager();
     }
@@ -93,9 +99,9 @@ public partial class TenCircle : Node
             GameStateManager.UpgradeLevels[definition.Id] = currentLevel + 1;
     }
 
-    public void AddMana()
+    public void AddMana(float amount)
     {
-        GameStateManager.RefinedMana[ManaType.Unrefined].Amount += 10;
+        GameStateManager.RefinedMana[ManaType.Unrefined].Amount += amount;
     }
 
     public void RefineMana()
@@ -108,10 +114,32 @@ public partial class TenCircle : Node
             if (refined.Type is ManaType.Unrefined)
                 continue;
 
+            if (!IsManaTypeUnlocked(refined.Type))
+                continue;
+
             float generalEfficiency = GetStat(StatType.ManaEfficiencyGeneral);
             float specificEfficiency = GetStat(SpecificManaEfficiencyStat(refined.Type));
-            refined.Amount += mana * (generalEfficiency + specificEfficiency);
+            refined.Amount += mana * (UnlockBaseEfficiency + generalEfficiency + specificEfficiency);
         }
+    }
+
+    public bool IsManaTypeUnlocked(ManaType type)
+    {
+        return GameStateManager.UnlockedManaTypes.Contains(type);
+    }
+
+    public bool TryUnlockManaType(ManaTypeUnlockDefinition definition)
+    {
+        if (IsManaTypeUnlocked(definition.Type))
+            return false;
+
+        Mana unrefined = GameStateManager.RefinedMana[ManaType.Unrefined];
+        if (unrefined.Amount < definition.Cost)
+            return false;
+
+        unrefined.Amount -= definition.Cost;
+        GameStateManager.UnlockedManaTypes.Add(definition.Type);
+        return true;
     }
 
     private static StatType SpecificManaEfficiencyStat(ManaType type) => type switch

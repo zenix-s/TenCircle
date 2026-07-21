@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scenes/Game/ManaBall/ManaBall.cs" id="1"]
+
+[node name="ManaBall" type="Node2D"]
+script = ExtResource("1")

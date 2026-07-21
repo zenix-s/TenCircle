@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Scenes/Game/Unlocks/Components/UnlockListComponent/UnlockListComponent.tscn" id="1_bng0t"]
+
+[node name="Unlocks" type="VBoxContainer" unique_id=1299278309]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UnlockListComponent" parent="." unique_id=682359996 instance=ExtResource("1_bng0t")]
+layout_mode = 2
+size_flags_vertical = 3
